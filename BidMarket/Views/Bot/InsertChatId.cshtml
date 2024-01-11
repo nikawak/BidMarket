@@ -1,0 +1,19 @@
+﻿
+<div class="container w-50 text-center justify-content-center shadow-lg p-5">
+    <form method="post">
+        <h1>Введите код, полученный от бота</h1>
+        <h5><a asp-action="OpenBot" asp-controller="Bot" target="_blank">Нет кода? получить</a></h5>
+        <input class="form-control" name="chatId"/>
+        @{
+            if (ViewBag.Success != null && ViewBag.Success)
+            {
+                <h4><span class="text-primary">@ViewBag.Result</span></h4><br/>
+            }
+            else if(ViewBag.Success != null)
+            {
+                <h4><span class="text-danger">@ViewBag.Result</span></h4><br />
+            }
+        }
+        <button class="btn btn-primary" type="submit" asp-action="InsertChatId" asp-controller="Bot">Отправить</button>
+    </form>
+</div>

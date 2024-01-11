@@ -1,0 +1,29 @@
+﻿@model Review
+
+<div class="container text-center">
+    <form method="post" enctype="multipart/form-data">
+        <div class="card container d-flex">
+            <h1 class="text-center">Написать отзыв</h1>
+
+            <div class="form-group">
+                <label>Ваша оценка:</label>
+                <select type="text" asp-for="CommentStars" required>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <textarea asp-for="Comment" placeholder="Напишите отзыв..."></textarea>
+            </div>
+            <input hidden asp-for="RecieverId" value="@Model.RecieverId"/>
+
+        </div>
+        <button type="submit" class="btn btn-primary" asp-action="WriteReview" asp-controller="Review">Отправить</button>
+        <a class="btn btn-danger" asp-action="GetUser" asp-controller="User" asp-route-id="@Model.RecieverId">Назад</a>
+
+    </form>
+</div>

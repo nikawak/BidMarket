@@ -1,0 +1,153 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject UserManager<AppUser> uM;
+@model Lot
+
+<link rel="stylesheet" href="~/css/style.css">
+@{
+
+    if(Model != null)
+    {
+        
+    
+
+
+  <div class="row container text-center">
+
+    <div class="card m-2 container-sm shadow-lg">
+        <div class="card-body">
+        <form>
+            <h3 class="card-title">
+                <a asp-controller="User" asp-action="GetUser" asp-route-id="@Model?.Id">Продавец @Model?.Seller?.Name</a>
+            </h3>
+        </form>
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    
+                     @{
+                        if (Model?.Images != null)
+                        {
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
+
+                            for (int i = 1;i< Model.Images.Count;i++)
+                            {
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                            }
+                        }
+                     }
+                </div>
+                <div class="carousel-inner text-center" style="justify-content: center;align-items: center;">
+                    @{
+                        if (Model?.Images != null)
+                        {
+                            <div class="carousel-item active">
+                                <img src="@Url.Action("MegaImageRead", "Lot" , new {id = Model.Id, number = 0})"
+                                     class="img-fluid" alt="img" style="max-height:300px">
+                            </div>
+                            for (int i = 1; i<Model.Images.Count; i++)
+                            {
+                                <div class="carousel-item">
+                                    <img src="@Url.Action("MegaImageRead", "Lot" , new {id = Model.Id, number = i})"
+                                         class="img-fluid" style="max-height:300px" alt="img">
+                                </div>
+                            }
+                        }
+
+                    }
+                    
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <form method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group input-group row justify-content-center m-2">
+                        <label>Название лота:</label>
+                        <input type="text" asp-for="@Model.Name" class="form-control col-lg-4 d-flex justify-content-center" required placeholder="Введите название лота">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group input-group row justify-content-center m-2">
+                        <label>Описание:</label>
+                        <textarea maxlength="150" class="form-control col-lg-4 d-flex justify-content-center" style="max-height:100px"
+                                  asp-for="@Model.Description" id="lot-description" required></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group input-group row justify-content-center m-2">
+                        <label>Начальная цена:</label>
+                        <input type="number" class="form-control col-lg-4 d-flex justify-content-center" asp-for="@Model.CurrentPrice" required placeholder="Введите начальную цену лота">
+                        <span asp-validation-for="CurrentPrice" class="text-danger"></span>
+                    </div>
+                    <input asp-for="Id" hidden value="@Model.Id" />
+                        <div class="form-group row justify-content-center d-flex m-4">
+
+
+                        <div class="form-group col">
+                            <label class="control-label">Время начала</label>
+                            <input asp-for="StartTime"
+                                   class="form-control"
+                                   type="datetime-local"
+                                   step="1"
+                                   value="@Model.StartTime.ToString("s")"
+                                       min="@DateTime.Now.AddHours(3).AddHours(-1).ToString("s")" />
+                            <span asp-validation-for="StartTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="control-label">Время конца</label>
+                            <input asp-for="EndTime"
+                                   class="form-control"
+                                   type="datetime-local"
+                                   value="@Model.EndTime.ToString("s")"
+                                   step="1"
+                                       min="@DateTime.Now.AddHours(3).AddMinutes(1).ToString("s")" />
+                            <span asp-validation-for="EndTime" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @if (Model.Categories == null || Model.Categories.Count() == 0)
+                    {
+                         <h6>Пользователь не выбрал категории</h6>   
+                    }
+                    else
+                    {
+                        <h6>Выбранные категории: </h6>
+                        foreach(string cat in ViewBag.Categories)
+                        {
+                            <h6>@cat</h6>
+                        }
+                    }
+
+                    <select name="reason">
+                        <option>Некорректные дата и время начала/конца аукциона на лот</option>
+                        <option>Оскорбительное или некорректное название лота</option>
+                        <option>Оскорбительное или некорректное описание лота</option>
+                        <option>Некорректная начальная цена лота</option>
+                        <option>Начальная цена не соответсвует лоту</option>
+                        <option>Оскорбительный лот</option>
+                        <option>Некорректный лот</option>
+                        <option>Непоходящие категории или их отсутствие</option>
+                    </select>
+                    <button asp-action="DisapproveLot" asp-controller="Lot" class="btn btn-danger">Отказать</button>
+                
+                <input hidden name="lotId" value="@Model.Id"/>
+                <button asp-action="ApproveLot" asp-controller="Lot" class="btn btn-primary">Подтвердить</button>
+                
+           </form>
+
+            
+        </div>
+    </div>
+    
+  </div>
+  }
+  else{
+      <h1>Вы проверили все лоты. Сейчас нет лотов для проверки</h1>
+  }
+}

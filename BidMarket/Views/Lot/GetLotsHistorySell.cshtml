@@ -1,0 +1,85 @@
+﻿@model List<Lot>
+@{
+    var lots = Model;
+}
+<form method="gets">
+    <h1>Красная обводка - покупатель не определён, зелёная - определён.</h1>
+<div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 text-center align-content-between">
+
+    @foreach (var item in lots)
+    {
+            @if(item.EndTime < DateTime.Now.AddHours(3) && item.Winner == null)
+            {
+                <div class="card m-5 p-1 container-sm shadow-lg border-danger border-3">
+                    <img class="card-img-top img-fluid" style="object-fit:cover;height:250px" src="@Url.Action("MegaImageRead", "Lot" , new { id = item.Id } )" />
+                    <div class="card-body">
+
+                        <h5 class="card-title"> @item.Name </h5>
+                        <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
+                        <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime.ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime.ToShortTimeString()</p>
+                        @if (item.Winner != null)
+                        {
+                            <a class="card-text" asp-action="GetUser" asp-controller="User" asp-route-id="@item.Winner?.Id">Покупатель @item.Winner?.Name</a>
+                        }
+                        else
+                        {
+                            <p class="card-text">Покупатель не определён</p>
+                        }
+
+                        <a class="btn btn-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+
+                    </div>
+                </div>
+            }
+            else if(item.EndTime < DateTime.Now.AddHours(3) && item.Winner != null)
+            {
+                <div class="card m-5 p-1 container-sm shadow-lg border-success border-3">
+                    <img class="card-img-top img-fluid" style="object-fit:cover;height:250px" src="@Url.Action("MegaImageRead", "Lot" , new { id = item.Id } )" />
+                    <div class="card-body">
+
+                        <h5 class="card-title"> @item.Name </h5>
+                        <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
+                        <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime.AddHours(3).ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime.AddHours(3).ToShortTimeString()</p>
+                        @if (item.Winner != null)
+                        {
+                            <a asp-action="GetUser" asp-controller="User" class="card-text">Покупатель @item.Winner?.Name</a>
+                        }
+                        else
+                        {
+                            <a class="card-text">Покупатель не определён</a>
+                        }
+
+                        <a class="btn btn-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card m-5 p-1 container-sm shadow-lg">
+                    <img class="card-img-top img-fluid" style="object-fit:cover;height:250px" src="@Url.Action("MegaImageRead", "Lot" , new { id = item.Id } )" />
+                    <div class="card-body">
+
+                        <h5 class="card-title"> @item.Name </h5>
+                        <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
+                        <p class="card-text"> @item.StartTime.ToLocalTime() - @item.EndTime.ToLocalTime()</p>
+                        @if (item.Winner != null)
+                        {
+                            <a asp-action="GetUser" asp-controller="User" asp-route-id="@item.Seller.Id" class="card-text">Покупатель @item.Winner?.Name</a>
+                        }
+                        else
+                        {
+                            <a class="card-text">Покупатель не определён</a>
+                        }
+
+                        <a class="btn btn-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+
+                    </div>
+                </div>
+            }
+
+        }
+        </div>
+        
+        </form>
+     

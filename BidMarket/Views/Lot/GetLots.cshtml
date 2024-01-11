@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject UserManager<AppUser> userM
+@model List<Lot>
+@{
+    var lots = Model;
+
+}
+
+<form method="get">
+
+    <div class="d-flex">
+        <label class="m-2">Категории</label>
+        <select name="filter" class="form-select m-2 w-50">
+            <option>Все</option>
+            @foreach (Category cat in ViewBag.Categories)
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        </select>
+        <label class="m-2">Сортировать</label>
+        <select name="sort" class="form-select m-2 w-50">
+            <option value="0">Скоро конец</option>
+            <option value="1">Недавно стартовали</option>
+        </select>
+        <button class="btn btn-primary m-2" asp-action="GetLots" asp-controller="Lot">Применить</button>
+    </div>
+
+</form>
+<div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 text-center align-content-between">
+  
+        @foreach (var item in lots)
+        {
+           
+            <div class="card m-5 p-1 container-sm shadow-lg">
+                <img class="card-img-top img-fluid" style="object-fit:cover;height:250px" src="@Url.Action("MegaImageRead", "Lot" , new { id = item.Id } )" />
+
+                <div class="card-body">
+                @if (!item.Approved.HasValue || !item.Approved.Value)
+                {
+                    <p class="text-info">Ваш лот находится в стадии обработки менеджером</p>
+                }
+                    <h5 class="card-title"> @item.Name </h5>
+                    <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
+                <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime.ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime.ToShortTimeString()</p>
+
+                @if ((await userM.GetUserAsync(User)).Id == item.Seller.Id)
+                {
+                    if (item.StartTime < DateTime.Now.AddHours(3) && item.Approved.HasValue && item.Approved.Value)
+                    {
+                        <p class="text-info m-0 p-1">Изменять и удалять лот можно только до начала торгов</p>
+                        <br />
+                        <form method="get">
+
+                            <a class="btn btn-primary col" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="btn-group" role="group">
+                            <form method="get">
+
+                                <a class="btn btn-outline-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+                            </form>
+
+                            <form method="get">
+                                <a class="btn btn-outline-warning" asp-action="EditLot" asp-controller="Lot" asp-route-id="@item.Id">Изменить</a>
+                            </form>
+                            <form method="post">
+                                <button class="btn btn-outline-danger" asp-action="DeleteLot" asp-controller="Lot" asp-route-id="@item.Id">Удалить</button>
+                            </form>
+                        </div>
+                    }
+                    
+
+                }
+                else
+                {
+                    
+                    <form method="get">
+
+                        <a class="btn btn-primary col" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+                    </form>
+                }
+            </div>
+            </div>
+        }
+    
+        </div>
+
+     

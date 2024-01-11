@@ -1,0 +1,78 @@
+﻿@model (AppUser, List<Lot>)
+@{
+    var user = Model.Item1;
+    var lots = Model.Item2;
+}
+
+<div class="container text-center card">
+    <h3 class="card-title">Профиль пользователя @user.Name</h3>
+    <p class="card-text">Email: @user.Email</p>
+    <p class="card-text">Телефон: @user.PhoneNumber</p>
+    @if (user.RecieveReviews != null && user.RecieveReviews.Count > 0)
+    {
+        <p class="card-text">Пользовательская оценка: @Math.Round((decimal)user?.RecieveReviews?.Average(x=>(int)x.CommentStars), 2)</p>
+    }
+    else
+    {
+        <p>Отзывы от других пользователей отсутствуют</p>
+    }
+        
+        @if (ViewBag.CanWriteReview)
+        {
+            <form method="get">
+                <a asp-action="WriteReview" asp-controller="Review" asp-route-id="@user.Id">Написать отзыв</a>
+            </form>
+        }
+        else
+        {
+            <p class="card-text">Писать отзыв могут только пользователи, купившие товар (только 1 отзыв)</p>
+        }
+    <form>
+        <a asp-action="Chat" asp-controller="Chat" asp-route-id="@user.Id" class="btn btn-primary">Отправить сообщение</a>
+
+        @if (user.RecieveReviews != null && user.RecieveReviews.Count > 0)
+        {
+            
+            foreach (var rev in user?.RecieveReviews)
+            {
+                <div class="container text-center card">
+                    <h4 class="card-title">Оценка: @((int)rev.CommentStars)</h4>
+                    <h4 class="card-title">Комментарий: @rev.Comment</h4>
+                    <a asp-controller="User" asp-action="GetUser" asp-route-id="@rev?.Sender?.Id"
+                        class="card-text">@rev?.Sender?.Name</a>
+                </div>
+            }
+        }
+        @if (lots != null)
+        {
+            <form method="get">
+
+
+                <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 text-center align-content-between">
+
+                    @foreach (var item in lots)
+                    {
+
+                        <div class="card m-5 p-1 container-sm shadow-lg">
+                            <img class="card-img-top img-fluid" style="object-fit:cover;height:250px" src="@Url.Action("MegaImageRead", "Lot" , new { id = item.Id } )" />
+
+                            <div class="card-body">
+
+                                <h5 class="card-title"> @item.Name </h5>
+                                <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
+                                <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime.ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime.ToShortTimeString()</p>
+
+
+                                <a class="btn btn-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </form>
+        }
+         
+    </form>
+    
+</div>

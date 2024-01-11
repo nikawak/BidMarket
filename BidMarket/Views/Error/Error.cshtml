@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Error";
+}
+
+<div class="card bg-white rounded-3 shadow-lg">
+    <h1>@ViewBag.ErrorMessage</h1>
+</div>
+
+<a asp-action="GetLots" asp-controller="Lot">Click here to return to the Home page</a>

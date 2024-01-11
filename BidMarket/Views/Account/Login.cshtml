@@ -1,0 +1,42 @@
+﻿@model RegisterUser
+
+<link rel="stylesheet" href="~/css/login.css" />
+<style>
+    input::placeholder{
+        color:dimgrey;
+    }
+</style>
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+<div class="container text-center">
+    <form method="post">
+    <h3 style ="color:black">Авторизация</h3>
+        <h4>
+            <div asp-validation-summary="All" style="color:red"></div>
+        </h4>
+
+    <label for="username" style="color:black">Почта</label>
+    <input type="text" asp-for="Email" style="outline-color:black; color:black;" placeholder="Введите почту..." id="username">
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+    <label for="password" style="color:black">Пароль</label>
+    <input type="password" style="color:black;outline-color:black;" asp-for="PasswordHash" placeholder="Введите пароль..." id="password">
+        <span asp-validation-for="PasswordHash" class="text-danger"></span><br/>
+    <a asp-action="signup" style="color:black;" asp-controller="Account">Нет аккаунта? Зарегистрироваться</a>
+    
+    <button asp-action="Login" style="color:black;outline-color:black;" asp-controller="Account" type="submit">Авторизоваться</button>
+       
+</form>
+</div>
+
+<script>
+    var x = document.querySelectorAll("li")
+
+    for (let i = 0; i<x.length; i++) {
+        x[i].style.color = "red"
+        x[i].style.listStyle = "none";
+    }
+    console.log(x.length)
+</script>

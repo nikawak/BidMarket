@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject UserManager<AppUser> userManager;
+@model List<Message>
+
+<div>
+    <div class="panel panel-primary container-fluid">
+        <div class="panel-heading container-fluid" id="accordion">
+            <h3>Чаты</h3>
+
+             @{
+                var curUser = await userManager.GetUserAsync(User);
+              }
+            
+                @foreach(var mes in Model)
+                {
+                <div class="card shadow-lg m-5 p-5">
+                    <div calss="d-flex">
+                        @if (curUser.Id == mes.Sender.Id)
+                        {
+                            <a asp-action="Chat" asp-controller="Chat" asp-route-id="@mes.Reciever.Id">
+                                <h3 class="card-title float-start">@mes.Reciever.Name</h3>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Chat" asp-controller="Chat" asp-route-id="@mes.Sender.Id">
+                                <h3 class="card-title float-start">@mes.Sender.Name</h3>
+                            </a>
+                        }
+                        <h5 class="float-end" style="margin-left:5px">@mes.DateTime</h5>
+                    </div>
+                    @{
+                        var shortMes = new string(mes.Text.Take(40).ToArray());
+                    }
+                    <h4 class="cart-text float-end">@shortMes</h4>
+                    </div>
+
+                }
+            
+
+        </div>
+    </div>
+</div>

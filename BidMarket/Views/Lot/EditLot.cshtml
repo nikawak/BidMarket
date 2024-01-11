@@ -1,0 +1,75 @@
+﻿@model LotEdit
+
+<link rel="stylesheet" href="~/css/style.css">
+  <div class="container text-center">
+    <form method="post">
+    <div class="card container d-flex shadow-lg">
+    <h1 class="text-center">Изменить лот</h1>
+
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group input-group row justify-content-center m-2">
+                <label>Название лота:</label>
+                <input type="text" asp-for="@Model.Name" class="form-control col-lg-4 d-flex justify-content-center" required placeholder="Введите название лота">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group input-group row justify-content-center m-2">
+                <label>Описание:</label>
+                <textarea maxlength="150" class="form-control col-lg-4 d-flex justify-content-center" style="max-height:100px"
+                          asp-for="@Model.Description" id="lot-description" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group input-group row justify-content-center m-2">
+                <label>Начальная цена:</label>
+                <input type="number" class="form-control col-lg-4 d-flex justify-content-center" asp-for="@Model.CurrentPrice" required placeholder="Введите начальную цену лота">
+                <span asp-validation-for="CurrentPrice" class="text-danger"></span>
+            </div>
+        <input asp-for="Id" hidden value="@Model.Id"/>
+            <div class="form-group row justify-content-center d-flex m-4">
+
+
+                <div class="form-group row">
+                    <label class="control-label">Время начала</label>
+                    <input asp-for="StartTime"
+                           class="form-control"
+                           type="datetime-local"
+                           step="1"
+                           value="@Model.StartTime.ToString("s")"
+                           min="@DateTime.Now.AddHours(3).AddMinutes(-30).ToString("s")" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <label class="control-label">Время конца</label>
+                    <input asp-for="EndTime"
+                           class="form-control"
+                           type="datetime-local"
+                           value="@Model.EndTime.ToString("s")"
+                           step="1"
+                           min="@DateTime.Now.AddHours(3).AddMinutes(1).ToString("s")" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            @if (ViewBag.Categories == null)
+            {
+                <h6>Вы не выбрали ни одной категории</h6>
+            }
+            else
+            {
+                <h6>Выбранные категории: </h6>
+                foreach (var cat in ViewBag.Categories)
+                {
+                    <h6>@cat ,  </h6>
+                }
+            }
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary w-25" asp-action="EditLot" asp-controller="Lot">Изменить лот</button>
+            <a class="btn btn-danger w-25" asp-action="GetSelfLots" asp-controller="Lot">Отмена</a>
+            </div>
+
+    
+    </form>
+  </div>

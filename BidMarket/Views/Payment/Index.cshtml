@@ -1,0 +1,47 @@
+﻿@model Transaction
+
+<form asp-action="Index" asp-controller="Payment" method="post">
+    @if (ViewBag.Result == null)
+    {
+        <div class="container shadow-lg bg-white rounded-3 justify-content-center">
+            <div class="d-flex">
+            <span class="m-3">Amount: </span>
+            <input asp-for="Amount" type="number" class="form-control m-3"/>
+            <input asp-for="NonceMethod" id="nonceMethod" type="text" hidden/>
+        </div>
+        <div id="dropin-container"></div>
+        <button id="submit-button" class="btn btn-primary" type="button">Choose card</button>
+    
+        <button class="btn btn-success">Send money</button>
+   
+        </div>
+    }
+    else{
+        if (ViewBag.CallBackToLot)
+        {
+            <button asp-action="GetLot" asp-controller="Lot" asp-route-id="@ViewBag.LotId">Вернуться к лоту</button>
+        }
+        <h1>@ViewBag.Result</h1>
+        <a asp-action="GetLots" asp-controller="Lot" class="btn btn-primary">Просмотр лотов</a>
+    }
+</form>
+
+@section Scripts{
+    <script src="https://js.braintreegateway.com/web/dropin/1.33.4/js/dropin.js"></script>
+<script>
+        var button = document.querySelector('#submit-button');
+        var token = "@ViewBag.Token";
+
+        braintree.dropin.create({
+            authorization: token,
+            selector: '#dropin-container'
+        }, function (err, instance) {
+            button.addEventListener('click', function () {
+                instance.requestPaymentMethod(function (err, payload) {
+                    var method = document.getElementById('#nonceMethod');
+                    document.querySelector("#nonceMethod").value = payload.nonce;
+                });
+            })
+        });
+</script>
+}

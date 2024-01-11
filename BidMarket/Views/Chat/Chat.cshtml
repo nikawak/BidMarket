@@ -1,0 +1,83 @@
+﻿@model Message[]
+
+<div>
+    <div class="panel panel-primary">
+        <div class="panel-heading" id="accordion" style="display:flex;justify-content:space-between">
+            <h3 class="text-center">Чат с @ViewBag.user.Name</h3>
+
+
+        </div>
+        <form method="get">
+            <a asp-action="GetUser" asp-controller="User" asp-route-id="@ViewBag.user.Id">Перейти в профиль</a>
+        </form>
+        <div class="panel-collapse " id="collapseOne">
+            <div class="panel-body" style="padding:5%">
+                <div class="chat">
+                    
+                    @foreach(var item in Model.OrderBy(x=>x.DateTime))
+                    {
+                        if(item.Sender.Id == ViewBag.userId)
+                        {
+                            <div class="left clearfix">
+                                <div class="chat-body clearfix card shadow-lg m-1 p-3 w-75">
+                                    <div>
+                                        <small class="text-muted"><span class="glyphicon glyphicon-time"></span>@item.DateTime</small>
+                                        <strong class="pull-right primary-font">@item.Reciever.Name</strong>
+                                    </div>
+                                    <h6 class="p-3">
+                                        @item.Text
+                                    </h6>
+                                </div>
+                            </div>
+                        }
+                        else{
+                            <div class="right clearfix">
+                                <div class="chat-body clearfix card shadow-lg m-1 p-3 w-75">
+                                    <div>
+                                        <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>@item.DateTime</small>
+                                        <strong class="pull-right primary-font">@item.Sender.Name</strong>
+                                    </div>
+                                    <h6 class="p-3">
+                                        @item.Text
+                                    </h6>
+                                </div>
+                            </div>
+                        }
+                        
+
+                            
+                    }
+                   
+                </div>
+                <form>
+
+                    <input type="text" hidden value="@ViewBag.user.Id" id="inp2" />
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="inp"/>
+                        <button type="reset" class="btn btn-outline-primary" onclick="send()">Отправить</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function send(){
+        var mes = {
+            recieverId: document.getElementById('inp2').value,
+            text: document.getElementById('inp').value
+        };
+        console.log(document.getElementById('inp2').value);
+        console.log(document.getElementById('inp2'))
+        $.ajax({
+            url: "@Url.Action("SendMessage", "Chat")",
+            type: "POST",
+            data: { message:mes },
+            success: function (data) {
+
+            }
+        });
+    }
+</script>

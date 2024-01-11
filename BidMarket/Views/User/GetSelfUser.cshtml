@@ -1,0 +1,36 @@
+﻿@model AppUser
+
+<div class="container card w-50">
+    <h3 class="card-title">Профиль</h3>
+    <p class="card-text">Почта @Model.Email</p>
+    <p class="card-text">Телефон @Model.PhoneNumber</p>
+    @if(Model.RecieveReviews != null && Model.RecieveReviews.Count > 0)
+    {
+        <p class="card-text">Пользовательская оценка: @Math.Round((decimal)Model?.RecieveReviews?.Average(x=>(int)x.CommentStars), 2)</p>
+    }
+    else
+    {
+        <p>Отзывы от других пользователей отсутствуют</p>
+    }
+    <p class="card-text">Баланс @Model.VirtualMoney</p>
+    <div class="row">
+
+        <a asp-action="EmailConfirm" asp-controller="Account" class="btn btn-outline-primary col">Подтвердить почту</a>
+        <a asp-action="ChangePhone" asp-controller="Account" class="btn btn-outline-info col">Сменить номер</a>
+        <a asp-action="ResetPassword" asp-controller="Account" class="btn btn-outline-danger col">Сбросить пароль</a>
+    </div>
+
+    @if (Model.RecieveReviews != null && Model.RecieveReviews.Count > 0)
+    {
+        
+        foreach (var rev in Model?.RecieveReviews)
+        {
+            <div class="container text-center card">
+                <h4 class="card-title">Оценка: @((int)rev.CommentStars)</h4>
+                <h4 class="card-title">Комментарий: @rev.Comment</h4>
+                <a asp-controller="User" asp-action="GetUser" asp-route-id="@rev?.Sender?.Id"
+                   class="card-text">@rev?.Sender?.Name</a>
+            </div>
+        }
+    }
+</div>

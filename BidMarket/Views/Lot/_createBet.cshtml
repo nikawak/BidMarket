@@ -1,0 +1,13 @@
+﻿@model Bet
+
+
+
+<form method="post">
+    @if (ViewBag.BetSizeError != null && ViewBag.BetSizeError)
+    {
+        <span class="text-danger">Ставка должна быть больше предыдущей</span>
+    }
+<input class="form-control" type="number" min="@Model.Size" asp-for="Size"/>
+<input hidden asp-for="LotId" value="@Model.LotId"/>
+<button asp-action="MakeBet" asp-controller="Bet" class="btn btn-primary">Сделать ставку</button>
+</form>

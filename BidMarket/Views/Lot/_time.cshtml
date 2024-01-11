@@ -1,0 +1,8 @@
+﻿@model DateTime
+
+@{
+    var timeToEnd = Model - DateTime.Now.AddHours(3);
+    timeToEnd = timeToEnd < TimeSpan.Zero ? TimeSpan.Zero : timeToEnd;
+    timeToEnd = new TimeSpan((int)timeToEnd.TotalHours, timeToEnd.Minutes, timeToEnd.Seconds);
+}
+<p class="card-text">Время до конца аукциона: @((int)timeToEnd.TotalHours) : @timeToEnd.Minutes : @timeToEnd.Seconds</p>

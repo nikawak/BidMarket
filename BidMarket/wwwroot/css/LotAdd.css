@@ -1,0 +1,27 @@
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #44b5c4;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition-duration: 0.4s;
+    border: none;
+  }
+  .button:hover {
+    background-color: #45a5b1;
+  }
+  .date-time{
+    padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+  }
+  .date-time:focus{
+    border-color: #44b5c4;
+  }

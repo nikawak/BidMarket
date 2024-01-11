@@ -1,0 +1,50 @@
+﻿@model RegisterUser
+
+<link rel="stylesheet" href="~/css/login.css"/>
+<style>
+    input::placeholder {
+        color: dimgrey;
+    }
+</style>
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+
+<div id="container text-center">
+    <form method="post">
+        <h3 style="color:black">Регистрация</h3>
+
+
+        <label for="username" style="color:black">Почта</label>
+        <input type="text" asp-for="Email" style="outline-color:black; color:black;" placeholder="Введите почту..." id="username">
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <label for="password" style="color:black">Имя</label>
+        <input style="color:black;outline-color:black;" asp-for="Name" placeholder="Введите имя...">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <label for="password" style="color:black">Номер телефона</label>
+        <input style="color:black;outline-color:black;" type="number" asp-for="PhoneNumber" placeholder="Введите номер телефона...">
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+        <label for="password" style="color:black">Пароль</label>
+        <input type="password" style="color:black;outline-color:black;" asp-for="PasswordHash" placeholder="Введите пароль...">
+        <span asp-validation-for="PasswordHash" class="text-danger"></span></br>
+
+        <a asp-action="login" style="color:black;" asp-controller="Account">Есть аккаунт? Авторизоваться</a>
+
+        <button asp-action="signup" style="color:black;outline-color:black;" asp-controller="Account" type="submit">Зарегистрироваться</button>
+
+    </form>
+</div>
+
+<script>
+    var x = document.querySelectorAll("li")
+
+    for (let i = 0; i < x.length; i++) {
+        x[i].style.color = "red"
+        x[i].style.listStyle = "none";
+    }
+    console.log(x.length)
+</script>

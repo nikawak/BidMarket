@@ -1,0 +1,138 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Diagnostics;
+@inject SignInManager<AppUser> signInManager
+@inject UserManager<AppUser> userManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CourseProject</title>
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CourseProject.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+</head>
+@{
+    var user = await userManager.GetUserAsync(User);
+    if (user!= null && user.VirtualMoney == null) { user.VirtualMoney = 0; userManager.UpdateAsync(user);  }
+}
+<body style="background-color:#f8f8f8">
+    <header>
+        @{
+            string path = ViewContext.View.Path;
+            var navNeedToHide = path.Contains("Email") || path.Contains("Password") || path.Contains("Phone") || path.Contains("signup") || path.Contains("Login");
+        }
+        @if (signInManager.IsSignedIn(User) && !navNeedToHide)
+                        {
+        <nav style="background-color: #e3f2fd;" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Lot" asp-action="GetLots">Главная</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav">
+                            @if (signInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Lot" asp-action="ManagerLot">Управление лотами</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle nav-link text-dark" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
+                                           asp-action="GetLots" asp-controller="Lot">
+                                            Лоты
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" asp-action="GetLots" asp-controller="Lot">Лоты</a></li>
+                                            <li><a class="dropdown-item" asp-action="GetSelfLots" asp-controller="Lot">Мои лоты</a></li>
+                                            <li><a class="dropdown-item" asp-action="GetLotsHistorySell" asp-controller="Lot">История проданных</a></li>
+                                            <li><a class="dropdown-item" asp-action="GetLotsHistoryBuy" asp-controller="Lot">История купленных</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-action="CreateLot" asp-controller="Lot">Создать лот</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Chat" asp-action="Index">Чаты</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-action="InsertChatId" asp-controller="Bot">Уведомления</a>
+                                </li>
+
+                            }
+                            
+                            
+                       
+                    </ul>
+                        <form method="post">
+                    <ul my-lg-0 class="navbar-nav">
+
+                                @if (signInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+                                {
+                                }
+                                else
+                                {
+                                    
+                                
+                                <li class="nav-item">
+                                        <div class="input-group">
+                                            <input type="search" name="searchString" placeholder="Search" class="form-control" />
+
+                                            <button asp-action="SearchLots" asp-controller="Lot" type="submit" class="btn btn-primary">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-info" asp-action="Index" asp-controller="Payment">Деньги @user.VirtualMoney</a>
+                                    </li>
+                                }
+                                <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="GetSelfUser">@user.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Выйти</a>
+                            </li>
+                           
+                           
+                    </ul>
+                        </form>
+                </div>
+            </div>
+        </nav>
+        }
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- payment -->
+    <script src="https://js.braintreegateway.com/web/dropin/1.33.4/js/dropin.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+
+    <!-- drag and drop -->
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

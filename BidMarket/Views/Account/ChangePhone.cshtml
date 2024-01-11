@@ -1,0 +1,19 @@
+﻿
+<link rel="stylesheet" href="~/css/login.css" />
+<style>
+    input::placeholder {
+        color: dimgrey;
+    }
+</style>
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+<form method="post">
+    <h3 style="color:black">Смена номера телефона</h3>
+
+    <label style="color:black" for="username">Номер</label>
+    <input style="color:black" type="number" name="phone" placeholder="Введите новый номер">
+
+    <button type="submit" style="color:black" asp-action="ChangePhone" asp-controller="Account">Подтвердить</button>
+</form>
