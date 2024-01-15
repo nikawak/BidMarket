@@ -16,7 +16,7 @@
 
                     <h5 class="card-title"> @item.Name </h5>
                     <p class="card-text"><strong>Текущая цена @item.CurrentPrice</strong></p>
-                    <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime.AddHours(3).ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime.AddHours(3).ToShortTimeString()</p>
+                    <p class="card-text"> @item.StartTime.ToShortDateString() @item.StartTime..ToShortTimeString() - @item.EndTime.ToShortDateString() @item.EndTime..ToShortTimeString()</p>
 
 
                     <a class="btn btn-primary" asp-action="GetLot" asp-controller="Lot" asp-route-id="@item.Id">Подробнее</a>

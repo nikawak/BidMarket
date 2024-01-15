@@ -25,7 +25,11 @@ namespace BidMarket.Controllers
         [HttpPost]
         public async Task<ActionResult> WriteReview(Review review)
         {
-
+            if(review.Comment == null || review.Comment == "")
+            {
+                ModelState.AddModelError("31", "Напишите комментарий");
+                return View(review);
+            }
             review.Sender = await _userManager.GetUserAsync(User);
             review.Reciever = await _userManager.FindByIdAsync(review.RecieverId.ToString());
             _context.Entry(review.Sender).State = EntityState.Unchanged;

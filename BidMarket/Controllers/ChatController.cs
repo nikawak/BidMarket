@@ -71,6 +71,10 @@ namespace BidMarket.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(Message message)
         {
+            if(message.Text == null || message.Text == "")
+            {
+                return View(message);
+            }
             var curUser = await _userManager.GetUserAsync(User);
             message.Sender = curUser;
             message.DateTime = DateTime.Now.AddHours(3);

@@ -84,7 +84,11 @@ namespace BidMarket.Controllers
             if (ModelState.IsValid)
             {
                 var appUser = _mapper.Map<AppUser>(user);
-                if (await _userManager.FindByEmailAsync(appUser?.Email) != null) View(user);
+                if (await _userManager.FindByEmailAsync(appUser?.Email) != null)
+                {
+                    ModelState.AddModelError("p1", "ѕользователь с таким email уже существует");
+                    return View(user);
+                }
 
                 appUser.PasswordHash = _hasher.Compute(appUser.PasswordHash);
                 appUser.UserName = appUser.Email;
@@ -115,20 +119,31 @@ namespace BidMarket.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<ActionResult> SignUpManager(AppUser appUser)
         {
-            if (await _userManager.FindByEmailAsync(appUser?.Email) != null) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                if (await _userManager.FindByEmailAsync(appUser?.Email) != null)
+                {
+                    ModelState.AddModelError("p1", "ѕользователь с таким email уже существует");
+                    return View(appUser);
+                }
 
-            appUser.PasswordHash = _hasher.Compute(appUser.PasswordHash);
-            appUser.UserName = appUser.Email;
-            appUser.VirtualMoney = 0;
-            var result = await _userManager.CreateAsync(appUser);
+                appUser.PasswordHash = _hasher.Compute(appUser.PasswordHash);
+                appUser.UserName = appUser.Email;
+                appUser.VirtualMoney = 0;
+                var result = await _userManager.CreateAsync(appUser);
 
-            if (!result.Succeeded) return BadRequest();
+                if (!result.Succeeded) return BadRequest();
 
-            await _sender.SendCodeAsync(appUser.Email);
+                await _sender.SendCodeAsync(appUser.Email);
 
-            await _userManager.AddToRoleAsync(appUser, "Manager");
+                await _userManager.AddToRoleAsync(appUser, "Manager");
 
-            await _signInManager.SignInAsync(appUser, true);
+                await _signInManager.SignInAsync(appUser, true);
+            }
+            else
+            {
+                return View(appUser);
+            }
 
             return RedirectToAction("EmailConfirm");
         }

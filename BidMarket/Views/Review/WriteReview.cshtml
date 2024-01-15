@@ -4,7 +4,7 @@
     <form method="post" enctype="multipart/form-data">
         <div class="card container d-flex">
             <h1 class="text-center">Написать отзыв</h1>
-
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label>Ваша оценка:</label>
                 <select type="text" asp-for="CommentStars" required>

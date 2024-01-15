@@ -17,7 +17,7 @@ public class Program
 
         services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
-        var connectionString = builder.Configuration.GetConnectionString("Local");
+        var connectionString = builder.Configuration.GetConnectionString("SqlCluster");
 
         services.AddDbContext<AppDbContext>(
         options =>

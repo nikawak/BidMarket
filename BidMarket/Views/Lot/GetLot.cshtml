@@ -68,29 +68,37 @@
                 <p >Время до конца: {{time}}</p>
 
                 <p >Описание: @Model.Description</p>
-                
-                
+
+                    @{
+                        var user = (await uM.GetUserAsync(User));
+                    }
                     
+                 @if (user?.Id != Model?.Seller?.Id )
+                {
                     <a class="btn btn-outline-primary" asp-action="GetUser" asp-controller="User" asp-route-id="@Model.Seller.Id">Связаться с автором лота</a>
+                }
                 </div>  
             </form>
-                    <div v-if="winner==null" class="w-100 justify-content-center form-group text-center">
-                
-                
-                @{
-                    var user = (await uM.GetUserAsync(User));
-                }
-                @if (user.Id != Model.Seller.Id && Model.StartTime < DateTime.Now.AddHours(3) && Model.EndTime > DateTime.Now.AddHours(3))
+
+            @{
+                var user2 = (await uM.GetUserAsync(User));
+            }
+            <div v-if="winner==null" class="w-100 justify-content-center form-group text-center">
+                @if (user2.Id != Model?.Seller?.Id && Model?.StartTime < DateTime.Now.AddHours(3) && Model.EndTime > DateTime.Now.AddHours(3))
                 {
                     <input class="form-control text-center justify-content-center" id="betS" />
                     <button type="button" onclick="makeBet" id="clickMe" class="btn btn-primary">Сделать ставку</button>
                 }
+                
             </div>
+
             <div v-else>
                 <h3>Аукцион окончен!!! Победитель: {{winner.name}}</h3>
             </div>
-            
-            @if(Model.Winner != null && Model.Winner.Id == user.Id)
+            @{
+                var user3 = (await uM.GetUserAsync(User));
+            }
+            @if(Model.Winner != null && Model.Winner.Id == user3.Id)
             {
                 if(Model.Payed.HasValue && Model.Payed.Value)
                 {
@@ -116,7 +124,7 @@
                 }
 
             }
-            else if (Model.Winner != null && Model.Winner.Id != user.Id)
+            else if (Model.Winner != null && Model.Winner.Id != user3.Id)
             {
                 if (Model.Payed.HasValue && Model.Payed.Value)
                 {

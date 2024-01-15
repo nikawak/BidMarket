@@ -49,7 +49,7 @@ namespace BidMarket.Controllers
             var resLots = new List<Lot>();
             foreach(var lot in lots)
             {
-                if(lot.EndTime > DateTime.Now.AddHours(3) && lot.StartTime < DateTime.Now.AddHours(3))
+                if(lot.EndTime > DateTime.Now.AddHours(3)&& lot.StartTime < DateTime.Now.AddHours(3))
                 {
                     resLots.Add(lot);
                 }
@@ -153,6 +153,11 @@ namespace BidMarket.Controllers
         {
             ViewBag.Categories = await _context.Categories.ToListAsync();
             if (!ModelState.IsValid) return View(createLot);
+            if (createLot.CurrentPrice <= 0)
+            {
+                ModelState.AddModelError("t", "Некорректная цена");
+                return View("ManagerLot", createLot);
+            }
             if (createLot.StartTime > createLot.EndTime)
             {
                 ModelState.AddModelError("t","Некорректное время");
@@ -224,7 +229,12 @@ namespace BidMarket.Controllers
         public async Task<ActionResult> EditLot(LotEdit editLot)
         {
             if (!ModelState.IsValid) return View(editLot);
-            if(editLot.EndTime < DateTime.Now.AddHours(3))
+            if (editLot.CurrentPrice <= 0)
+            {
+                ModelState.AddModelError("t", "Некорректная цена");
+                return View("ManagerLot", editLot);
+            }
+            if (editLot.EndTime < DateTime.Now.AddHours(3))
             {
                 ModelState.AddModelError("t4", "Аукцион на этот лот уже закончился. Вы не можете его редактировать");
                 return View(editLot);
@@ -293,15 +303,25 @@ namespace BidMarket.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<ActionResult> ManagerLot()
         {
-            var lot = await _context.Lots
+
+            var lots = _context.Lots
                 .OrderBy(x => x.StartTime)
                 .Include(x => x.Images)
                 .Include(x => x.Categories)
                 .Include(x => x.Seller)
-                .Where(x => !x.Approved.HasValue && x.EndTime > DateTime.Now.AddHours(3))
-                .FirstOrDefaultAsync();
+                .Where(x => !x.Approved.HasValue && x.EndTime > DateTime.Now);
 
-            if(lot != null)
+            var resLots = new List<Lot>();
+            foreach (var lot1 in lots)
+            {
+                if (lot1.EndTime > DateTime.Now.AddHours(3))
+                {
+                    resLots.Add(lot1);
+                }
+            }
+
+            var lot = resLots.FirstOrDefault();
+            if (lot != null)
             {
                 ViewBag.Categories = lot?.Categories?.Select(x => _context.Categories.Find(x.CategoryId).Name);
             }
@@ -350,6 +370,11 @@ namespace BidMarket.Controllers
             {
                 ModelState.AddModelError("t", "Некорректное время");
                 return View("ManagerLot",editLot);
+            }
+            if (lot.CurrentPrice <= 0)
+            {
+                ModelState.AddModelError("t", "Некорректная цена");
+                return View("ManagerLot", editLot);
             }
             if (lot.EndTime.AddMinutes(3) < DateTime.Now.AddHours(3))
             {
@@ -449,7 +474,7 @@ namespace BidMarket.Controllers
             var resLots = new List<Lot>();
             foreach (var lot in lots)
             {
-                if (lot.EndTime > DateTime.Now.AddHours(3) && lot.StartTime < DateTime.Now.AddHours(3))
+                if (lot.EndTime > DateTime.Now.AddHours(3)&& lot.StartTime < DateTime.Now.AddHours(3))
                 {
                     resLots.Add(lot);
                 }

@@ -14,7 +14,7 @@ namespace BidMarket.Services
             this.CreateMap<LotDTO, Lot>();
             //    .ForMember(l => l.CurrentPrice, opt => opt.MapFrom(src => src.StartPrice));
             //this.CreateMap<CreateBetDTO, Bet>()
-            //    .ForMember(b => b.Time, opt => opt.MapFrom(src => DateTime.Now.AddHours(3)));
+            //    .ForMember(b => b.Time, opt => opt.MapFrom(src => DateTime.Now.AddHours(3).));
             //this.CreateMap<ReviewDTO, Review>();
         }
     }

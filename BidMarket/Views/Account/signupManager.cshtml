@@ -13,8 +13,9 @@
 
 <div id="container text-center">
     <form method="post">
-        <h3 style="color:black">Регистрация</h3>
+        <h3 style="color:black">Регистрация модератора</h3>
 
+        <div asp-validation-summary="All" class="text-danger"></div>
 
         <label for="username" style="color:black">Почта</label>
         <input type="text" asp-for="Email" style="outline-color:black; color:black;" placeholder="Введите почту..." id="username">

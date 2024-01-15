@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BidMarket.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231221193736_ii")]
-    partial class ii
+    [Migration("20240111175551_cluster")]
+    partial class cluster
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -145,16 +145,11 @@ namespace BidMarket.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("LotId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LotId");
 
                     b.ToTable("Categories");
                 });
@@ -168,6 +163,9 @@ namespace BidMarket.Migrations
                     b.Property<bool?>("Approved")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("Confirmed")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -179,6 +177,9 @@ namespace BidMarket.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("Payed")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("SellerId")
                         .HasColumnType("uniqueidentifier");
@@ -298,6 +299,27 @@ namespace BidMarket.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("BidMarket.Services.CategoryLot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LotId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("LotId");
+
+                    b.ToTable("CategoryLot");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -448,13 +470,6 @@ namespace BidMarket.Migrations
                     b.Navigation("Lot");
                 });
 
-            modelBuilder.Entity("BidMarket.Models.Category", b =>
-                {
-                    b.HasOne("BidMarket.Models.Lot", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("LotId");
-                });
-
             modelBuilder.Entity("BidMarket.Models.Lot", b =>
                 {
                     b.HasOne("BidMarket.Models.AppUser", "Seller")
@@ -507,6 +522,21 @@ namespace BidMarket.Migrations
                     b.Navigation("Reciever");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("BidMarket.Services.CategoryLot", b =>
+                {
+                    b.HasOne("BidMarket.Models.Category", null)
+                        .WithMany("Lots")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BidMarket.Models.Lot", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -565,6 +595,11 @@ namespace BidMarket.Migrations
                     b.Navigation("RecieveReviews");
 
                     b.Navigation("SendReviews");
+                });
+
+            modelBuilder.Entity("BidMarket.Models.Category", b =>
+                {
+                    b.Navigation("Lots");
                 });
 
             modelBuilder.Entity("BidMarket.Models.Lot", b =>

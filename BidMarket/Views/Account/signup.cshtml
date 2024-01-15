@@ -14,23 +14,23 @@
 <div id="container text-center">
     <form method="post">
         <h3 style="color:black">Регистрация</h3>
-
+        <div asp-validation-summary="All" class="text-danger"></div>
 
         <label for="username" style="color:black">Почта</label>
         <input type="text" asp-for="Email" style="outline-color:black; color:black;" placeholder="Введите почту..." id="username">
-        <span asp-validation-for="Email" class="text-danger"></span>
+        
 
         <label for="password" style="color:black">Имя</label>
         <input style="color:black;outline-color:black;" asp-for="Name" placeholder="Введите имя...">
-        <span asp-validation-for="Name" class="text-danger"></span>
+        
 
         <label for="password" style="color:black">Номер телефона</label>
         <input style="color:black;outline-color:black;" type="number" asp-for="PhoneNumber" placeholder="Введите номер телефона...">
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        
 
         <label for="password" style="color:black">Пароль</label>
         <input type="password" style="color:black;outline-color:black;" asp-for="PasswordHash" placeholder="Введите пароль...">
-        <span asp-validation-for="PasswordHash" class="text-danger"></span></br>
+        <br/>
 
         <a asp-action="login" style="color:black;" asp-controller="Account">Есть аккаунт? Авторизоваться</a>
 

@@ -51,8 +51,8 @@
                     class="form-control"
                     type="datetime-local"
                            step="1"    
-                           value="@DateTime.Now.AddHours(3).AddMinutes(3).ToString("s")"
-                           min="@DateTime.Now.AddHours(3).AddMinutes(3).ToString("s")" />
+                           value="@DateTime.Now.AddHours(3).AddMinutes(1).ToString("s")"
+                           min="@DateTime.Now.AddHours(3).AddMinutes(1).ToString("s")" />
                     <span asp-validation-for="StartTime" class="text-danger"></span>
         </div>
 
@@ -62,8 +62,8 @@
                     class="form-control"
                             step="1"
                             type="datetime-local"
-                           value="@DateTime.Now.AddHours(3).AddMinutes(6).ToString("s")"
-                           min="@DateTime.Now.AddHours(3).AddMinutes(6).ToString("s")" />
+                           value="@DateTime.Now.AddHours(3).AddMinutes(4).ToString("s")"
+                           min="@DateTime.Now.AddHours(3).AddMinutes(4).ToString("s")" />
                     <span asp-validation-for="EndTime" class="text-danger"></span>
         </div>
             </div>
